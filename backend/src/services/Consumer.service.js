@@ -11,7 +11,7 @@ class ConsumerService {
     });
 
     if (checkExist) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Consumer Already in Record");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Consumidor já cadastrado");
       return;
     }
 
@@ -25,7 +25,7 @@ class ConsumerService {
     });
 
     return {
-      msg: "Consumer Added :)",
+      msg: "Consumidor adicionado com sucesso",
     };
   }
 
@@ -36,29 +36,21 @@ class ConsumerService {
     });
 
     if (!checkExist) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Consumer Not Found in Record"
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Consumidor não encontrado");
       return;
     }
 
     await OrdersModel.deleteMany({ consumer: id });
 
     return {
-      msg: "Consumer Deleted :)",
+      msg: "Consumidor excluído com sucesso",
     };
   }
   static async getById(user, id) {
     const checkExist = await ConsumerModel.findOne({ _id: id, user: user });
 
-    console.log({ user, id });
-
     if (!checkExist) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Consumer Not Found in Record"
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Consumidor não encontrado");
       return;
     }
 
@@ -93,11 +85,9 @@ class ConsumerService {
       .select("name email mobile")
       .skip(skip)
       .limit(limit);
-    //total document
 
     const totalConsumer = await ConsumerModel.countDocuments(queryies);
 
-    //hasmore
     const hasMore = skip + limit < totalConsumer;
 
     return {
@@ -120,7 +110,7 @@ class ConsumerService {
       if (checkExistEmail) {
         throw new ApiError(
           httpStatus.BAD_REQUEST,
-          "Consumer Email Already in Another Record "
+          "E-mail do consumidor já cadastrado em outro registro"
         );
         return;
       }
@@ -136,14 +126,12 @@ class ConsumerService {
     });
 
     return {
-      msg: "Consumer Update :)",
+      msg: "Consumidor atualizado com sucesso",
     };
   }
 
   static async GetUserForSearch(user) {
     const data = await ConsumerModel.find({ user }).select("name dob");
-
-    //total document
 
     return {
       users: data,
@@ -154,18 +142,8 @@ class ConsumerService {
     const orders = await OrdersModel.find({ user }).select("items.price -_id");
 
     const arr = await orders.map((cur) => {
-      // console.log();
       return [...cur.items.map((c) => c.price)];
     });
-
-    //    let sale =0
-
-    //    for (let index = 0; index < array.length; index++) {
-    //     const element = array[index];
-
-    //    }
-
-    //total document
 
     return {
       consumers,

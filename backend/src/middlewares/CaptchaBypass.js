@@ -9,24 +9,21 @@ const CaptchaBypass = (req, res, next) => {
     if (!token) {
       return res
         .status(400)
-        .json({ message: "Captcha token is required (even in development)" });
+        .json({
+          message: "Token do captcha é obrigatório (mesmo em desenvolvimento)",
+        });
     }
 
     // Log opcional só pra controle
-    console.log(
-      "⚠️ Captcha verificado via bypass (ambiente de desenvolvimento)"
-    );
+    console.log("Captcha verificado via bypass (ambiente de desenvolvimento)");
     return next();
   }
 
   // Em produção, aqui deveria ir a verificação real com o Google reCAPTCHA
   // Por enquanto, apenas impede se não houver token
   if (!token) {
-    return res.status(400).json({ message: "Captcha token is required" });
+    return res.status(400).json({ message: "Token do captcha é obrigatório" });
   }
-
-  // TO-DO: Verificação real pode ser implementada aqui depois
-  // Exemplo com fetch ou axios para https://www.google.com/recaptcha/api/siteverify
 
   return next(); // Provisoriamente permite continuar
 };

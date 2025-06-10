@@ -8,7 +8,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 async function verifyCaptcha(token) {
   if (!isProduction) {
-    console.log("⚠️ Captcha ignorado no ambiente de desenvolvimento");
+    console.log("Captcha ignorado no ambiente de desenvolvimento");
     return true;
   }
 
@@ -51,7 +51,7 @@ class AuthService {
     });
 
     return {
-      msg: "User Registered Successfully",
+      msg: "Usuário registrado com sucesso",
       token: tokend,
     };
   }
@@ -75,7 +75,7 @@ class AuthService {
 
     const tokend = generatoken(checkExist);
     return {
-      msg: "User Logged In Successfully",
+      msg: "Usuário logado com sucesso",
       token: tokend,
     };
   }
@@ -87,7 +87,7 @@ class AuthService {
     }
 
     return {
-      msg: "Data Fetched",
+      msg: "Dados obtidos com sucesso",
       user: checkExist,
     };
   }

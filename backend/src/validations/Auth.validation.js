@@ -1,31 +1,31 @@
 const { body } = require("express-validator");
 class AuthValidation {
   static RegisterUser = [
-    body("token").notEmpty().withMessage("token is Required"),
-    body("name").notEmpty().withMessage("name can not be empty"),
+    body("token").notEmpty().withMessage("Token do captcha é obrigatório"),
+    body("name").notEmpty().withMessage("Nome não pode ser vazio"),
     body("email")
       .isEmail()
-      .withMessage("email must be valid")
+      .withMessage("E-mail deve ser válido")
       .notEmpty()
-      .withMessage("name can not be empty"),
+      .withMessage("E-mail não pode ser vazio"),
     body("password")
       .isLength({ min: 6 })
-      .withMessage("password include mininum 6 characters")
+      .withMessage("A senha deve ter no mínimo 6 caracteres")
       .notEmpty()
-      .withMessage("password is required"),
+      .withMessage("Senha é obrigatória"),
   ];
   static LoginUser = [
-    body("token").notEmpty().withMessage("token is Required"),
+    body("token").notEmpty().withMessage("Token do captcha é obrigatório"),
     body("email")
       .isEmail()
-      .withMessage("email must be valid")
+      .withMessage("E-mail deve ser válido")
       .notEmpty()
-      .withMessage("email is required"),
+      .withMessage("E-mail é obrigatório"),
     body("password")
       .isLength({ min: 6 })
-      .withMessage("password include mininum 6 characters")
+      .withMessage("A senha deve ter no mínimo 6 caracteres")
       .notEmpty()
-      .withMessage("password is required"),
+      .withMessage("Senha é obrigatória"),
   ];
 }
 
