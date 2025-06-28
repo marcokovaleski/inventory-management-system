@@ -1,5 +1,15 @@
+/**
+ * Validações de Autenticação
+ * Define as regras de validação para registro e login de usuários
+ */
+
 const { body } = require("express-validator");
+
 class AuthValidation {
+  /**
+   * Validações para registro de usuário
+   * Verifica token do captcha, nome, email e senha
+   */
   static RegisterUser = [
     body("token").notEmpty().withMessage("Token do captcha é obrigatório"),
     body("name").notEmpty().withMessage("Nome não pode ser vazio"),
@@ -14,6 +24,11 @@ class AuthValidation {
       .notEmpty()
       .withMessage("Senha é obrigatória"),
   ];
+
+  /**
+   * Validações para login de usuário
+   * Verifica token do captcha, email e senha
+   */
   static LoginUser = [
     body("token").notEmpty().withMessage("Token do captcha é obrigatório"),
     body("email")

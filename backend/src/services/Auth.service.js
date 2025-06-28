@@ -1,3 +1,8 @@
+/**
+ * Serviço de Autenticação
+ * Gerencia operações de registro, login e perfil de usuários
+ */
+
 const httpStatus = require("http-status");
 const { UserModel, ProfileModel } = require("../models");
 const ApiError = require("../utils/ApiError");
@@ -6,6 +11,11 @@ const axios = require("axios");
 
 const isProduction = process.env.NODE_ENV === "production";
 
+/**
+ * Verifica o token do reCAPTCHA
+ * @param {string} token - Token do reCAPTCHA
+ * @returns {boolean} - True se válido, false caso contrário
+ */
 async function verifyCaptcha(token) {
   if (!isProduction) {
     console.log("Captcha ignorado no ambiente de desenvolvimento");
@@ -28,23 +38,32 @@ async function verifyCaptcha(token) {
 }
 
 class AuthService {
+  /**
+   * Registra um novo usuário no sistema
+   * @param {Object} body - Dados do usuário (email, password, name, token)
+   * @returns {Object} - Token de autenticação e mensagem de sucesso
+   */
   static async RegisterUser(body) {
     const { email, password, name, token } = body;
 
+    // Verifica se o captcha é válido
     const isValid = await verifyCaptcha(token);
     if (!isValid) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Captcha Not Valid");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Captcha inválido");
     }
 
+    // Verifica se o usuário já existe
     const checkExist = await UserModel.findOne({ email });
     if (checkExist) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "User Already Registered");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Usuário já registrado");
     }
 
+    // Cria o usuário e gera tokens
     const user = await UserModel.create({ email, password, name });
     const tokend = generatoken(user);
     const refresh_token = generatoken(user, "2d");
 
+    // Cria o perfil do usuário
     await ProfileModel.create({
       user: user._id,
       refresh_token,
@@ -56,23 +75,32 @@ class AuthService {
     };
   }
 
+  /**
+   * Autentica um usuário existente
+   * @param {Object} body - Credenciais do usuário (email, password, token)
+   * @returns {Object} - Token de autenticação e mensagem de sucesso
+   */
   static async LoginUser(body) {
     const { email, password, token } = body;
 
+    // Verifica se o captcha é válido
     const isValid = await verifyCaptcha(token);
     if (!isValid) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Captcha Not Valid");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Captcha inválido");
     }
 
+    // Verifica se o usuário existe
     const checkExist = await UserModel.findOne({ email });
     if (!checkExist) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "User Not Registered");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Usuário não registrado");
     }
 
+    // Verifica se a senha está correta
     if (password !== checkExist.password) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Invalid Credentials");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Credenciais inválidas");
     }
 
+    // Gera token de autenticação
     const tokend = generatoken(checkExist);
     return {
       msg: "Usuário logado com sucesso",
@@ -80,10 +108,15 @@ class AuthService {
     };
   }
 
+  /**
+   * Obtém dados do perfil do usuário
+   * @param {string} user - ID do usuário
+   * @returns {Object} - Dados do usuário e mensagem de sucesso
+   */
   static async ProfileService(user) {
     const checkExist = await UserModel.findById(user).select("name email");
     if (!checkExist) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "User Not Registered");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Usuário não registrado");
     }
 
     return {

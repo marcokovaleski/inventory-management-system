@@ -1,3 +1,7 @@
+/**
+ * Componente de Gráfico de Pizza
+ * Exibe estatísticas do dashboard em formato de gráfico circular
+ */
 
 import   { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
@@ -6,8 +10,11 @@ import { useLocation } from 'react-router-dom';
 import Loader from '../../../components/Loader';
 
 export default function PieChartDemo() {
+    // Estados para dados e opções do gráfico
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
+    
+    // Query para buscar dados do dashboard
     const { data, isError, isLoading, isFetching } = useDashboardDataQuery({})
     const location = useLocation()
 
@@ -17,8 +24,10 @@ export default function PieChartDemo() {
         }
 
         const documentStyle = getComputedStyle(document.documentElement);
+        
+        // Configuração dos dados do gráfico de pizza
         const chartData = {
-            labels: ['user', 'orders', 'sell'],
+            labels: ['Usuários', 'Pedidos', 'Vendas'],
             datasets: [
                 {
                     data: [data.consumers, data.orders, data.sell],
@@ -35,6 +44,8 @@ export default function PieChartDemo() {
                 }
             ]
         }
+        
+        // Opções de configuração do gráfico
         const options = {
             plugins: {
                 legend: {
@@ -48,17 +59,20 @@ export default function PieChartDemo() {
         setChartData(chartData);
         setChartOptions(options);
     }, [data, location]);
+    
+    // Exibe loader durante carregamento
     if (isFetching || isLoading) {
         return <Loader />
     }
+    
+    // Exibe mensagem de erro em caso de falha
     if (isError) {
         return <>
-            something went wrong
+            Algo deu errado
         </>
     }
 
     return ( 
-            <Chart type="pie" data={chartData} options={chartOptions} className="w-full lg:w-1/2" />
-      
+        <Chart type="pie" data={chartData} options={chartOptions} className="w-full lg:w-1/2" />
     )
 }

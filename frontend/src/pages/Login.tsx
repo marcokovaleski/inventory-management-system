@@ -1,3 +1,8 @@
+/**
+ * Página de Login
+ * Permite que usuários autentiquem no sistema usando email, senha e reCAPTCHA
+ */
+
 import { ErrorMessage, Field, Formik } from "formik";
 import { Button } from "primereact/button";
 import { useRef } from "react";
@@ -6,35 +11,46 @@ import * as yup from "yup";
 import { useLoginUserMutation } from "../provider/queries/Auth.query";
 import { toast } from "sonner";
 import ReCAPTCHA from "react-google-recaptcha";
+
 const Login = () => {
   const [LoginUser, LoginUserResponse] = useLoginUserMutation();
   const navigate = useNavigate();
+  
+  // Interface para os dados do formulário de login
   type User = {
     token: string;
     email: string;
     password: string;
   };
 
+  // Referência para o componente reCAPTCHA
   //@ts-ignore
   const RecaptchaRef = useRef<any>();
 
+  // Valores iniciais do formulário
   const initialValues: User = {
     token: "",
     email: "",
     password: "",
   };
 
+  // Schema de validação usando Yup
   const validationSchema = yup.object({
     email: yup
       .string()
-      .email("email must be valid")
-      .required("email is required"),
+      .email("Email deve ser válido")
+      .required("Email é obrigatório"),
     password: yup
       .string()
-      .min(5, "Password must be grather than 5 characters")
-      .required("password is required"),
+      .min(5, "Senha deve ter mais de 5 caracteres")
+      .required("Senha é obrigatória"),
   });
 
+  /**
+   * Manipula o envio do formulário de login
+   * @param {User} e - Dados do formulário
+   * @param {Object} resetForm - Função para resetar o formulário
+   */
   const OnSubmitHandler = async (e: User, { resetForm }: any) => {
     try {
       const { data, error }: any = await LoginUser(e);
@@ -43,16 +59,15 @@ const Login = () => {
         return;
       }
 
-      // console.log(data,error);
-
+      // Armazena o token de autenticação no localStorage
       localStorage.setItem("token", data.token);
 
       resetForm();
       navigate("/");
     } catch (error: any) {
-      // toast
       toast.error(error.message);
     } finally {
+      // Reseta o reCAPTCHA após o envio
       RecaptchaRef.current.reset();
     }
   };
@@ -77,7 +92,7 @@ const Login = () => {
                     id="email"
                     name="email"
                     className="w-full outline-none py-3 px-2 border-[.1px] border-zinc-400 rounded-lg"
-                    placeholder="Enter Email Address"
+                    placeholder="Digite seu endereço de email"
                   />
                   <ErrorMessage
                     component={"p"}
@@ -86,7 +101,7 @@ const Login = () => {
                   />
                 </div>
                 <div className="mb-3 py-1">
-                  <label htmlFor="password">Password</label>
+                  <label htmlFor="password">Senha</label>
 
                   <Field
                     name="password"
@@ -116,24 +131,24 @@ const Login = () => {
                     loading={LoginUserResponse.isLoading}
                     className="w-full bg-red-500 text-white py-3 px-2 flex items-center justify-center"
                   >
-                    Submit
+                    Entrar
                   </Button>
                 </div>
                 <div className="mb-3 py-1 flex items-center justify-end">
                   <p className="inline-flex items-center gap-x-1">
                     {" "}
-                    Don't Have An Account?
+                    Não tem uma conta?
                     <Link className="font-semibold" to={"/register"}>
-                      Register
+                      Registrar
                     </Link>
                   </p>
                 </div>
                 <div className="mb-3 py-1 flex items-center justify-end">
                   <p className="inline-flex items-center gap-x-1">
                     {" "}
-                    Forget
+                    Esqueceu a
                     <Link className="font-semibold" to={"#"}>
-                      Password ?
+                      senha?
                     </Link>
                   </p>
                 </div>

@@ -1,3 +1,7 @@
+/**
+ * Componente de Gráfico de Barras
+ * Exibe estatísticas do dashboard em formato de gráfico de barras
+ */
 
 import   { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
@@ -6,22 +10,22 @@ import Loader from '../../../components/Loader';
 import { useLocation } from 'react-router-dom';
 
 export default function BasicChart() {
-
+    // Query para buscar dados do dashboard
     const {  data,isError,isLoading,isFetching } = useDashboardDataQuery({})
     const location = useLocation()
 
+    // Estados para dados e opções do gráfico
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
 
-    
     useEffect(() => {
+        if(!data){
+            return
+        }
 
-            if(!data){
-                return
-            }
-
+        // Configuração dos dados do gráfico de barras
         const chartData = {
-            labels: ['user', 'orders','sell' ],
+            labels: ['Usuários', 'Pedidos', 'Vendas'],
             datasets: [
                 {
                     label: ['Total'],
@@ -40,6 +44,8 @@ export default function BasicChart() {
                 }
             ]
         };
+        
+        // Opções de configuração do gráfico
         const options = {
             scales: {
                 y: {
@@ -52,19 +58,20 @@ export default function BasicChart() {
         setChartOptions(options);
     }, [data, location]);
 
+    // Exibe loader durante carregamento
     if (isFetching || isLoading) {
         return <Loader />
     }
+    
+    // Exibe mensagem de erro em caso de falha
     if (isError) {
         return <>
-            something went wrong
+            Algo deu errado
         </>
     }
 
-
     return ( 
-            <Chart type="bar" width='' className=' w-full lg:w-1/2 ' data={chartData} options={chartOptions} />
-    
+        <Chart type="bar" width='' className=' w-full lg:w-1/2 ' data={chartData} options={chartOptions} />
     )
 }
 

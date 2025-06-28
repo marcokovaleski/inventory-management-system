@@ -1,5 +1,15 @@
+/**
+ * Validações de Consumidor
+ * Define as regras de validação para operações relacionadas a consumidores/usuários
+ */
+
 const { body, param, query } = require("express-validator");
+
 class ConsumerValidation {
+  /**
+   * Validações para registro de consumidor
+   * Verifica nome, email, telefone, data de nascimento e endereço
+   */
   static RegisterConsumer = [
     body("name").notEmpty().withMessage("Nome não pode ser vazio"),
     body("email")
@@ -12,6 +22,10 @@ class ConsumerValidation {
     body("address").notEmpty().withMessage("Endereço não pode ser vazio"),
   ];
 
+  /**
+   * Validações para parâmetros de ID
+   * Verifica se o ID fornecido é um MongoDB ObjectId válido
+   */
   static Params_id = [
     param("id")
       .isMongoId()
@@ -20,6 +34,10 @@ class ConsumerValidation {
       .withMessage("ID é obrigatório"),
   ];
 
+  /**
+   * Validações para parâmetros de query
+   * Permite parâmetros opcionais de página e busca
+   */
   static query_page = [query("page").optional(), query("query").optional()];
 }
 

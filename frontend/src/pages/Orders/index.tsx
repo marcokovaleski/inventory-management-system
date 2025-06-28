@@ -1,3 +1,8 @@
+/**
+ * Página de Pedidos
+ * Exibe lista de pedidos com funcionalidades de busca e paginação
+ */
+
 import { FormEvent, useState } from "react";
 import BredCrums from "../../components/BredCrums";
 // import Model from './Components/Model.user';
@@ -8,27 +13,38 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AddOrderModel from "./components/AddOrder.model";
 import { useGetAllOrdersQuery } from "../../provider/queries/Orders.query";
 import TableCard from "./components/Card.order";
+
 const OrdersPage = () => {
+  // Estado para controlar a visibilidade do modal de adicionar pedido
   const [visible, setVisible] = useState(false);
 
   const navigate = useNavigate();
   // const query= useSearchParams()
 
+  // Parâmetros de busca da URL
   const [SearchParams] = useSearchParams();
   const [Search, setSearch] = useState(SearchParams.get("query") || "");
+  
+  // Query para buscar pedidos com paginação e filtros
   const { data, isLoading, isError } = useGetAllOrdersQuery({
     query: SearchParams.get("query") || "",
     page: SearchParams.get("page") || 1,
   });
 
+  // Exibe loader durante o carregamento
   if (isLoading) {
     return <Loader />;
   }
 
+  // Exibe mensagem de erro em caso de falha
   if (isError) {
-    return <h1>something wrong wrong</h1>;
+    return <h1>Algo deu errado</h1>;
   }
 
+  /**
+   * Manipula a busca de pedidos
+   * @param {FormEvent<HTMLFormElement>} e - Evento do formulário
+   */
   const SearchHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -36,6 +52,9 @@ const OrdersPage = () => {
     navigate(`/orders` + string);
   };
 
+  /**
+   * Navega para a próxima página de resultados
+   */
   const OnNextPageHandler = () => {
     const page = Number(SearchParams.get("page")) || 1;
     const query = SearchParams.get("query") || "";
@@ -52,6 +71,9 @@ const OrdersPage = () => {
     navigate(`/orders` + string);
   };
 
+  /**
+   * Navega para a página anterior de resultados
+   */
   const onPrevPageHandler = () => {
     const page = Number(SearchParams.get("page")) || 1;
     const query = SearchParams.get("query") || "";
@@ -68,14 +90,14 @@ const OrdersPage = () => {
 
   return (
     <>
-      <BredCrums PageLink="/orders" PageName="Orders" />
+      <BredCrums PageLink="/orders" PageName="Pedidos" />
 
       <div className="mb-3 flex justify-end w-[90%] mx-auto">
         <button
           onClick={() => setVisible(!visible)}
           className="px-5 py-2 bg-purple-500 text-white rounded-sm"
         >
-          Add Orders
+          Adicionar Pedidos
         </button>
       </div>
       <form
@@ -86,7 +108,7 @@ const OrdersPage = () => {
           value={Search}
           onChange={(e: any) => setSearch(e.target.value)}
           className=" w-[90%] mx-auto lg:mx-0 lg:w-1/2 rounded-sm border py-3 px-5 outline-none "
-          placeholder="Search Orders"
+          placeholder="Buscar Pedidos"
         />
       </form>
 
@@ -100,7 +122,7 @@ const OrdersPage = () => {
         {(Number(SearchParams.get("page")) || 1) > 1 && (
           <button
             onClick={onPrevPageHandler}
-            title="Prev Page"
+            title="Página Anterior"
             className="text-black  text-xl lg:text-3xl p-2"
           >
             <BsArrowLeftCircle />
@@ -110,7 +132,7 @@ const OrdersPage = () => {
         {data && data.hasMore && (
           <button
             onClick={OnNextPageHandler}
-            title="Next Page"
+            title="Próxima Página"
             className="text-black  text-xl lg:text-3xl p-2"
           >
             <BsArrowRightCircle />
@@ -127,16 +149,16 @@ const OrdersPage = () => {
                 ID
               </th>
               <th scope="col" className="px-6 py-3">
-                Name
+                Nome
               </th>
               <th scope="col" className="px-6 py-3">
                 Email
               </th>
               <th scope="col" className="px-6 py-3">
-                Items
+                Itens
               </th>
               <th scope="col" className="px-6 py-3">
-                Actions
+                Ações
               </th>
             </tr>
           </thead>
