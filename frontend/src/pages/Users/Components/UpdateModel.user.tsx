@@ -10,18 +10,18 @@ import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { toast } from 'sonner';
 import { useGetConsumersQuery, useUpdateConsumerMutation } from '../../../provider/queries/Users.query';
-import Loader from '../../../components/Loader'; 
+import Loader from '../../../components/Loader';
 
-const UpdateModel = ({ visible ,setVisible,_id}:any) => {
+const UpdateModel = ({ visible, setVisible, _id }: any) => {
     // Query para buscar dados do usuário
-    const {isLoading,data } = useGetConsumersQuery(_id)
-    
+    const { isLoading, data } = useGetConsumersQuery(_id)
+
     // Mutation para atualizar usuário
-    const [updateConsumer,updateConsumerResponse] = useUpdateConsumerMutation()        
-    
+    const [updateConsumer, updateConsumerResponse] = useUpdateConsumerMutation()
+
     // Exibe loader durante carregamento
-    if (isLoading){
-        return <Loader/>
+    if (isLoading) {
+        return <Loader />
     }
 
     // Schema de validação usando Yup
@@ -32,7 +32,7 @@ const UpdateModel = ({ visible ,setVisible,_id}:any) => {
         address: yup.string().required("Endereço é obrigatório"),
         dob: yup.string().required("Data de nascimento é obrigatória"),
     })
-        
+
     // Valores iniciais do formulário com dados do usuário
     const initialValues = {
         name: data.user.name,
@@ -70,15 +70,15 @@ const UpdateModel = ({ visible ,setVisible,_id}:any) => {
         } catch (error: any) {
             console.log(error);
             toast.error(error.message)
-        } 
+        }
     }
 
     return (
         <>
-            <Dialog 
-                draggable={false} 
-                visible={visible} 
-                className=' w-[90%] mx-auto lg:mx-0 lg:w-1/2' 
+            <Dialog
+                draggable={false}
+                visible={visible}
+                className=' w-[90%] mx-auto lg:mx-0 lg:w-1/2'
                 onHide={() => setVisible(false)}
             >
                 <Formik onSubmit={onSubmitHandler} initialValues={initialValues} validationSchema={validationSchema}>
@@ -87,74 +87,74 @@ const UpdateModel = ({ visible ,setVisible,_id}:any) => {
                             <form onSubmit={handleSubmit} className="w-full" >
                                 <div className="mb-3">
                                     <label htmlFor="name">Nome <span className="text-red-500 text-sm">*</span> </label>
-                                    <Field 
-                                        name="name" 
-                                        id="name" 
-                                        type="text" 
-                                        placeholder='Digite o nome do usuário' 
-                                        className="w-full my-2 border outline-none py-3 px-4" 
+                                    <Field
+                                        name="name"
+                                        id="name"
+                                        type="text"
+                                        placeholder='Digite o nome do usuário'
+                                        className="w-full my-2 border outline-none py-3 px-4"
                                     />
                                     <ErrorMessage name='name' className='text-red-500 capitalize' component={'p'} />
                                 </div>
 
                                 <div className="mb-3">
                                     <label htmlFor="email">Email <span className="text-red-500 text-sm">*</span> </label>
-                                    <Field 
-                                        name="email" 
-                                        id="email" 
-                                        type="text" 
-                                        placeholder='Digite o email do usuário' 
-                                        className="w-full my-2 border outline-none py-3 px-4" 
+                                    <Field
+                                        name="email"
+                                        id="email"
+                                        type="text"
+                                        placeholder='Digite o email do usuário'
+                                        className="w-full my-2 border outline-none py-3 px-4"
                                     />
                                     <ErrorMessage name='email' className='text-red-500 capitalize' component={'p'} />
                                 </div>
-                                
+
                                 <div className="mb-3">
                                     <label htmlFor="mobile">Telefone <span className="text-red-500 text-sm">*</span> </label>
-                                    <Field 
-                                        name="mobile" 
-                                        id="mobile" 
-                                        type="text" 
-                                        placeholder='Digite o telefone do usuário' 
-                                        className="w-full my-2 border outline-none py-3 px-4" 
+                                    <Field
+                                        name="mobile"
+                                        id="mobile"
+                                        type="text"
+                                        placeholder='Digite o telefone do usuário'
+                                        className="w-full my-2 border outline-none py-3 px-4"
                                     />
                                     <ErrorMessage name='mobile' className='text-red-500 capitalize' component={'p'} />
                                 </div>
 
                                 <div className="mb-3">
                                     <label htmlFor="dob">Data de Nascimento <span className="text-red-500 text-sm">*</span> </label>
-                                    <Calendar  
-                                        id='dob'   
-                                        className='w-full my-2 border outline-none py-3 px-4 ring-0' 
-                                        maxDate={new Date()} 
-                                        inputClassName='outline-none ring-0' 
-                                        placeholder='Selecione a data de nascimento' 
-                                        dateFormat='dd/mm/yy' 
-                                        value={values.dob} 
+                                    <Calendar
+                                        id='dob'
+                                        className='w-full my-2 border outline-none py-3 px-4 ring-0'
+                                        maxDate={new Date()}
+                                        inputClassName='outline-none ring-0'
+                                        placeholder='Selecione a data de nascimento'
+                                        dateFormat='dd/mm/yy'
+                                        value={values.dob}
                                         onChange={(e) => {
                                             setFieldValue('dob', e.value)
-                                        }} 
+                                        }}
                                     />
                                     <ErrorMessage name='dob' className='text-red-500 capitalize' component={'p'} />
                                 </div>
 
                                 <div className="mb-3">
                                     <label htmlFor="address">Endereço <span className="text-red-500 text-sm">*</span> </label>
-                                    <Field 
-                                        as="textarea" 
-                                        rows={3} 
-                                        name="address" 
-                                        id="address" 
-                                        type="text" 
-                                        placeholder='Digite o endereço do usuário' 
-                                        className="w-full my-2 border outline-none py-3 px-4" 
+                                    <Field
+                                        as="textarea"
+                                        rows={3}
+                                        name="address"
+                                        id="address"
+                                        type="text"
+                                        placeholder='Digite o endereço do usuário'
+                                        className="w-full my-2 border outline-none py-3 px-4"
                                     />
                                     <ErrorMessage name='address' className='text-red-500 capitalize' component={'p'} />
                                 </div>
-                                
+
                                 <div className="flex justify-end">
                                     <Button
-                                        loading={updateConsumerResponse.isLoading} 
+                                        loading={updateConsumerResponse.isLoading}
                                         className="text-white px-5 rounded-sm bg-indigo-500 py-3 text-center "
                                     >
                                         Atualizar Usuário

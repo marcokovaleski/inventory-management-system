@@ -6,7 +6,7 @@
 class ApiError extends Error {
   // Código de status HTTP padrão (500 - Erro interno do servidor)
   statusCode = 500;
-  
+
   /**
    * Construtor da classe ApiError
    * @param {number} statusCode - Código de status HTTP

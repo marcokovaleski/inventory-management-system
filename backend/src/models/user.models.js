@@ -19,7 +19,7 @@ const Schema = new mongoose.Schema(
       type: String,
       unique: true, // Garante que cada email seja único
       trim: true,
-      lower: true, // Converte para minúsculas
+      lowercase: true, // Converte para minúsculas
       required: [true, "E-mail é obrigatório"],
     },
     // Senha do usuário (deve ser criptografada antes de salvar)
@@ -29,7 +29,7 @@ const Schema = new mongoose.Schema(
       required: [true, "Senha é obrigatória"],
     },
   },
-  { 
+  {
     timestamps: true // Adiciona campos createdAt e updatedAt automaticamente
   }
 );

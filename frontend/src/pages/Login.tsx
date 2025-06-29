@@ -15,7 +15,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 const Login = () => {
   const [LoginUser, LoginUserResponse] = useLoginUserMutation();
   const navigate = useNavigate();
-  
+
   // Interface para os dados do formulário de login
   type User = {
     token: string;
@@ -42,7 +42,7 @@ const Login = () => {
       .required("Email é obrigatório"),
     password: yup
       .string()
-      .min(5, "Senha deve ter mais de 5 caracteres")
+      .min(6, "Senha deve ter no mínimo 6 caracteres")
       .required("Senha é obrigatória"),
   });
 
@@ -86,6 +86,7 @@ const Login = () => {
                 onSubmit={handleSubmit}
                 className="w-[96%] md:w-[70%] lg:w-1/3 shadow-md rounded-md pt-10 pb-3 px-4 bg-white"
               >
+                {/* Campo Email */}
                 <div className="mb-3 py-1">
                   <label htmlFor="email">Email</label>
                   <Field
@@ -100,12 +101,14 @@ const Login = () => {
                     name="email"
                   />
                 </div>
+
+                {/* Campo Senha */}
                 <div className="mb-3 py-1">
                   <label htmlFor="password">Senha</label>
-
                   <Field
                     name="password"
                     id="password"
+                    type="password"
                     className="w-full outline-none py-3 px-2 border-[.1px] border-zinc-400 rounded-lg"
                     placeholder="*****"
                   />
@@ -115,6 +118,8 @@ const Login = () => {
                     name="password"
                   />
                 </div>
+
+                {/* Componente reCAPTCHA */}
                 <div className="mb-3 py-1">
                   <ReCAPTCHA
                     ref={RecaptchaRef}
@@ -124,6 +129,8 @@ const Login = () => {
                     }}
                   />
                 </div>
+
+                {/* Botão de Login */}
                 <div className="mb-3 py-1 flex items-center justify-center">
                   <Button
                     type="submit"
@@ -134,18 +141,20 @@ const Login = () => {
                     Entrar
                   </Button>
                 </div>
+
+                {/* Link para Registro */}
                 <div className="mb-3 py-1 flex items-center justify-end">
                   <p className="inline-flex items-center gap-x-1">
-                    {" "}
                     Não tem uma conta?
                     <Link className="font-semibold" to={"/register"}>
                       Registrar
                     </Link>
                   </p>
                 </div>
+
+                {/* Link para Recuperação de Senha */}
                 <div className="mb-3 py-1 flex items-center justify-end">
                   <p className="inline-flex items-center gap-x-1">
-                    {" "}
                     Esqueceu a
                     <Link className="font-semibold" to={"#"}>
                       senha?

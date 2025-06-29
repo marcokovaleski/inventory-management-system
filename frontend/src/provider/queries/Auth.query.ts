@@ -8,7 +8,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Criação da API de autenticação
 export const AuthApi = createApi({
   reducerPath: "AuthApi", // Nome do reducer no store
-  baseQuery: fetchBaseQuery({ 
+  baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND_URL // URL base do backend
   }),
   endpoints: (builder) => ({

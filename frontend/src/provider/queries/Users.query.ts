@@ -8,13 +8,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Criação da API de usuários
 export const UserApi = createApi({
   reducerPath: "UserApi", // Nome do reducer no store
-  baseQuery: fetchBaseQuery({ 
+  baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND_URL // URL base do backend
   }),
 
   // Tags para cache invalidation
   tagTypes: ["getAllConsumer", "getConsumer"],
-  
+
   endpoints: (builder) => ({
     // Mutation para registrar novo usuário
     registerConsumer: builder.mutation<any, any>({
@@ -28,7 +28,7 @@ export const UserApi = createApi({
       }),
       invalidatesTags: ["getAllConsumer"], // Invalida cache de lista de usuários
     }),
-    
+
     // Query para buscar todos os usuários com paginação e filtros
     getAllConsumers: builder.query<any, any>({
       query: (obj) => ({
@@ -52,7 +52,7 @@ export const UserApi = createApi({
       }),
       providesTags: ["getAllConsumer"],
     }),
-    
+
     // Mutation para deletar usuário
     deleteConsumer: builder.mutation<any, any>({
       query: (_id) => ({
@@ -64,7 +64,7 @@ export const UserApi = createApi({
       }),
       invalidatesTags: ["getAllConsumer"],
     }),
-    
+
     // Query para buscar usuário específico por ID
     getConsumers: builder.query<any, any>({
       query: (_id) => ({
@@ -76,7 +76,7 @@ export const UserApi = createApi({
       }),
       providesTags: ["getConsumer"], // Fornece cache para usuário específico
     }),
-    
+
     // Mutation para atualizar usuário
     UpdateConsumer: builder.mutation<any, any>({
       query: ({ data, _id }) => ({

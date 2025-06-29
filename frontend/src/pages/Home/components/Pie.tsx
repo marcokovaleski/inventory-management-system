@@ -3,7 +3,7 @@
  * Exibe estatísticas do dashboard em formato de gráfico circular
  */
 
-import   { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
 import { useDashboardDataQuery } from '../../../provider/queries/Users.query';
 import { useLocation } from 'react-router-dom';
@@ -13,7 +13,7 @@ export default function PieChartDemo() {
     // Estados para dados e opções do gráfico
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
-    
+
     // Query para buscar dados do dashboard
     const { data, isError, isLoading, isFetching } = useDashboardDataQuery({})
     const location = useLocation()
@@ -24,7 +24,7 @@ export default function PieChartDemo() {
         }
 
         const documentStyle = getComputedStyle(document.documentElement);
-        
+
         // Configuração dos dados do gráfico de pizza
         const chartData = {
             labels: ['Usuários', 'Pedidos', 'Vendas'],
@@ -44,7 +44,7 @@ export default function PieChartDemo() {
                 }
             ]
         }
-        
+
         // Opções de configuração do gráfico
         const options = {
             plugins: {
@@ -59,12 +59,12 @@ export default function PieChartDemo() {
         setChartData(chartData);
         setChartOptions(options);
     }, [data, location]);
-    
+
     // Exibe loader durante carregamento
     if (isFetching || isLoading) {
         return <Loader />
     }
-    
+
     // Exibe mensagem de erro em caso de falha
     if (isError) {
         return <>
@@ -72,7 +72,7 @@ export default function PieChartDemo() {
         </>
     }
 
-    return ( 
+    return (
         <Chart type="pie" data={chartData} options={chartOptions} className="w-full lg:w-1/2" />
     )
 }

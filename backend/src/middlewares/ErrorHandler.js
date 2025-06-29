@@ -14,7 +14,7 @@ const ApiError = require("../utils/ApiError");
  */
 const ErrorHandling = (err, req, res, next) => {
   const obj = {};
-  
+
   // Verifica se é um erro customizado da aplicação
   if (err instanceof ApiError) {
     obj["statusCode"] = err.statusCode;

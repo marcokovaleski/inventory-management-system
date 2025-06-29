@@ -5,9 +5,7 @@
 
 import { FormEvent, useState } from "react";
 import BredCrums from "../../components/BredCrums";
-// import Model from './Components/Model.user';
 import Loader from "../../components/Loader";
-// import TableCard from './Components/Card.user';
 import { BsArrowRightCircle, BsArrowLeftCircle } from "react-icons/bs";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AddOrderModel from "./components/AddOrder.model";
@@ -17,14 +15,12 @@ import TableCard from "./components/Card.order";
 const OrdersPage = () => {
   // Estado para controlar a visibilidade do modal de adicionar pedido
   const [visible, setVisible] = useState(false);
-
   const navigate = useNavigate();
-  // const query= useSearchParams()
 
   // Parâmetros de busca da URL
   const [SearchParams] = useSearchParams();
   const [Search, setSearch] = useState(SearchParams.get("query") || "");
-  
+
   // Query para buscar pedidos com paginação e filtros
   const { data, isLoading, isError } = useGetAllOrdersQuery({
     query: SearchParams.get("query") || "",
@@ -47,7 +43,6 @@ const OrdersPage = () => {
    */
   const SearchHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     let string = `?query=${Search}&page=${1}`;
     navigate(`/orders` + string);
   };
@@ -65,8 +60,6 @@ const OrdersPage = () => {
     } else {
       string = `?page=${page + 1}`;
     }
-
-    console.log(page);
 
     navigate(`/orders` + string);
   };
@@ -92,6 +85,7 @@ const OrdersPage = () => {
     <>
       <BredCrums PageLink="/orders" PageName="Pedidos" />
 
+      {/* Botão para adicionar novo pedido */}
       <div className="mb-3 flex justify-end w-[90%] mx-auto">
         <button
           onClick={() => setVisible(!visible)}
@@ -100,6 +94,8 @@ const OrdersPage = () => {
           Adicionar Pedidos
         </button>
       </div>
+
+      {/* Formulário de busca */}
       <form
         onSubmit={SearchHandler}
         className="mb-3 flex justify-end w-[90%] mx-auto"
@@ -107,23 +103,24 @@ const OrdersPage = () => {
         <input
           value={Search}
           onChange={(e: any) => setSearch(e.target.value)}
-          className=" w-[90%] mx-auto lg:mx-0 lg:w-1/2 rounded-sm border py-3 px-5 outline-none "
+          className="w-[90%] mx-auto lg:mx-0 lg:w-1/2 rounded-sm border py-3 px-5 outline-none"
           placeholder="Buscar Pedidos"
         />
       </form>
 
+      {/* Controles de paginação */}
       <div
-        className={`mb-3 flex  ${
+        className={`mb-3 flex ${
           (Number(SearchParams.get("page")) || 1) > 1
             ? "justify-between"
             : "justify-end"
-        }  w-[90%]  mx-auto`}
+        } w-[90%] mx-auto`}
       >
         {(Number(SearchParams.get("page")) || 1) > 1 && (
           <button
             onClick={onPrevPageHandler}
             title="Página Anterior"
-            className="text-black  text-xl lg:text-3xl p-2"
+            className="text-black text-xl lg:text-3xl p-2"
           >
             <BsArrowLeftCircle />
           </button>
@@ -133,17 +130,17 @@ const OrdersPage = () => {
           <button
             onClick={OnNextPageHandler}
             title="Próxima Página"
-            className="text-black  text-xl lg:text-3xl p-2"
+            className="text-black text-xl lg:text-3xl p-2"
           >
             <BsArrowRightCircle />
           </button>
         )}
       </div>
 
-      {/* {isLoading || isFetching ? <> */}
+      {/* Tabela de pedidos */}
       <div className="relative overflow-x-auto shadow">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3">
                 ID
@@ -163,8 +160,6 @@ const OrdersPage = () => {
             </tr>
           </thead>
           <tbody>
-            {/* {JSON.stringify(data)} */}
-
             {data.data &&
               data.data.length > 0 &&
               data.data.map((c: any, i: number) => {
@@ -174,6 +169,7 @@ const OrdersPage = () => {
         </table>
       </div>
 
+      {/* Modal para adicionar pedido */}
       <AddOrderModel visible={visible} setVisible={setVisible} />
     </>
   );

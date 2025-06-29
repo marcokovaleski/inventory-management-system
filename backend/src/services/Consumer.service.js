@@ -25,7 +25,6 @@ class ConsumerService {
 
     if (checkExist) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Consumidor já cadastrado");
-      return;
     }
 
     // Cria o novo consumidor
@@ -57,7 +56,6 @@ class ConsumerService {
 
     if (!checkExist) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Consumidor não encontrado");
-      return;
     }
 
     // Exclui todos os pedidos relacionados ao consumidor
@@ -79,7 +77,6 @@ class ConsumerService {
 
     if (!checkExist) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Consumidor não encontrado");
-      return;
     }
 
     return {
@@ -103,16 +100,16 @@ class ConsumerService {
       user,
       $or: [
         {
-          name: new RegExp(query),
+          name: new RegExp(query, "i"), // Case insensitive
         },
         {
-          email: new RegExp(query),
+          email: new RegExp(query, "i"), // Case insensitive
         },
         {
-          address: new RegExp(query),
+          address: new RegExp(query, "i"), // Case insensitive
         },
         {
-          mobile: new RegExp(query),
+          mobile: new RegExp(query, "i"), // Case insensitive
         },
       ],
     };
@@ -121,7 +118,8 @@ class ConsumerService {
     const data = await ConsumerModel.find(queryies)
       .select("name email mobile")
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ createdAt: -1 }); // Ordena por data de criação (mais recentes primeiro)
 
     // Conta total de consumidores para paginação
     const totalConsumer = await ConsumerModel.countDocuments(queryies);
@@ -145,6 +143,10 @@ class ConsumerService {
 
     const checkExist = await ConsumerModel.findById({ _id: id });
 
+    if (!checkExist) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Consumidor não encontrado");
+    }
+
     // Verifica se o email foi alterado e se já existe
     if (checkExist.email !== email) {
       const checkExistEmail = await ConsumerModel.findOne({
@@ -157,7 +159,6 @@ class ConsumerService {
           httpStatus.BAD_REQUEST,
           "E-mail do consumidor já cadastrado em outro registro"
         );
-        return;
       }
     }
 
@@ -198,14 +199,16 @@ class ConsumerService {
     const consumers = await ConsumerModel.countDocuments({ user });
     const orders = await OrdersModel.find({ user }).select("items.price -_id");
 
-    const arr = await orders.map((cur) => {
-      return [...cur.items.map((c) => c.price)];
-    });
+    // Calcula o total de vendas
+    const totalSales = orders.reduce((total, order) => {
+      const orderTotal = order.items.reduce((sum, item) => sum + (item.price || 0), 0);
+      return total + orderTotal;
+    }, 0);
 
     return {
       consumers,
       orders: orders.length,
-      sell: arr.length > 0 ? arr.flat(2).reduce((a, c) => a + c) : arr,
+      sell: totalSales,
     };
   }
 }

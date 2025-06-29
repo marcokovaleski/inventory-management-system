@@ -33,19 +33,21 @@ class OrderService {
    * @param {string} query - Termo de busca nos itens
    * @returns {Object} - Lista de pedidos e informações de paginação
    */
-  static async getAllorders(user, page = 1, query) {
+  static async getAllorders(user, page = 1, query = "") {
     const limit = 10;
     const perPage = (Number(page) - 1) * limit;
 
-    // Query com filtro de busca nos itens
-    const queryies = {
-      user,
-      items: {
+    // Query base
+    let queryies = { user };
+
+    // Adiciona filtro de busca se query fornecida
+    if (query && query.trim()) {
+      queryies.items = {
         $elemMatch: {
-          name: { $regex: query, $options: "i" },
+          name: { $regex: query, $options: "i" }, // Case insensitive
         },
-      },
-    };
+      };
+    }
 
     // Busca pedidos com população de dados do consumidor
     const data = await OrdersModel.find(queryies)
@@ -75,7 +77,6 @@ class OrderService {
 
     if (!existOrder) {
       throw new ApiError(httpStatus.NOT_FOUND, "Pedido não encontrado");
-      return;
     }
 
     await OrdersModel.findByIdAndDelete(existOrder._id);
@@ -99,7 +100,6 @@ class OrderService {
 
     if (!order) {
       throw new ApiError(httpStatus.NOT_FOUND, "Pedido não encontrado");
-      return;
     }
 
     return order;

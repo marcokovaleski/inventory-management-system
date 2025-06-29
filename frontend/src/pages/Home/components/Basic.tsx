@@ -3,7 +3,7 @@
  * Exibe estatísticas do dashboard em formato de gráfico de barras
  */
 
-import   { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
 import { useDashboardDataQuery } from '../../../provider/queries/Users.query';
 import Loader from '../../../components/Loader';
@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom';
 
 export default function BasicChart() {
     // Query para buscar dados do dashboard
-    const {  data,isError,isLoading,isFetching } = useDashboardDataQuery({})
+    const { data, isError, isLoading, isFetching } = useDashboardDataQuery({})
     const location = useLocation()
 
     // Estados para dados e opções do gráfico
@@ -19,7 +19,7 @@ export default function BasicChart() {
     const [chartOptions, setChartOptions] = useState({});
 
     useEffect(() => {
-        if(!data){
+        if (!data) {
             return
         }
 
@@ -33,18 +33,18 @@ export default function BasicChart() {
                     backgroundColor: [
                         'rgba(255, 159, 64, 0.2)',
                         'rgba(75, 192, 192, 0.2)',
-                        'rgba(54, 162, 235, 0.2)', 
+                        'rgba(54, 162, 235, 0.2)',
                     ],
                     borderColor: [
                         'rgb(255, 159, 64)',
                         'rgb(75, 192, 192)',
-                        'rgb(54, 162, 235)', 
+                        'rgb(54, 162, 235)',
                     ],
                     borderWidth: 1
                 }
             ]
         };
-        
+
         // Opções de configuração do gráfico
         const options = {
             scales: {
@@ -62,7 +62,7 @@ export default function BasicChart() {
     if (isFetching || isLoading) {
         return <Loader />
     }
-    
+
     // Exibe mensagem de erro em caso de falha
     if (isError) {
         return <>
@@ -70,7 +70,7 @@ export default function BasicChart() {
         </>
     }
 
-    return ( 
+    return (
         <Chart type="bar" width='' className=' w-full lg:w-1/2 ' data={chartData} options={chartOptions} />
     )
 }

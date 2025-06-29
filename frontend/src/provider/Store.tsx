@@ -14,7 +14,7 @@ import { OrdersApi } from "./queries/Orders.query";
 // Configuração do store principal
 export const store = configureStore({
     // Reducers da aplicação
-    reducer:{
+    reducer: {
         [UserSlice.name]: UserSlice.reducer,        // Slice de usuário
         [SidebarSlice.name]: SidebarSlice.reducer,  // Slice da sidebar
         [AuthApi.reducerPath]: AuthApi.reducer,     // API de autenticação
@@ -28,7 +28,7 @@ export const store = configureStore({
         UserApi.middleware,   // Middleware para usuários
         OrdersApi.middleware  // Middleware para pedidos
     )
-}) 
+})
 
 // Configura listeners para RTK Query
 setupListeners(store.dispatch)

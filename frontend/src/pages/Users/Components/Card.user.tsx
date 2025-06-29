@@ -4,15 +4,23 @@
  */
 
 import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog'
-import   { useState } from 'react'
+import { useState } from 'react'
 import { FaRegEdit, FaRegTrashAlt } from 'react-icons/fa'
 import { LuView } from 'react-icons/lu'
 import { useDeleteConsumerMutation } from '../../../provider/queries/Users.query'
 import { toast } from 'sonner'
-import { Button } from 'primereact/button' 
+import { Button } from 'primereact/button'
 import UpdateModel from './UpdateModel.user'
+import { locale, addLocale } from 'primereact/api'
 
-const TableCard = ({ data, id }:any) => {
+addLocale('pt', {
+    accept: 'Sim',
+    reject: 'Não',
+    // Outras traduções se necessário
+})
+locale('pt')
+
+const TableCard = ({ data, id }: any) => {
     // Mutation para deletar usuário
     const [DeleteConsumer, DeleteConsumerResponse] = useDeleteConsumerMutation()
 
@@ -25,9 +33,11 @@ const TableCard = ({ data, id }:any) => {
      */
     const deleteHandler = (_id: string) => {
         confirmDialog({
-            message: 'Deseja excluir este registro?',
+            message: 'Deseja realmente excluir este consumidor?',
             header: 'Confirmação de Exclusão',
             icon: 'pi pi-info-circle',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
             defaultFocus: 'reject',
             acceptClassName: 'p-button-danger',
             accept: async () => {
@@ -40,7 +50,7 @@ const TableCard = ({ data, id }:any) => {
                         toast.error(error.data.message);
                         return
                     }
-                    toast.success(data.msg) 
+                    toast.success(data.msg)
                 } catch (e: any) {
                     toast.error(e.message)
                 }
@@ -72,34 +82,34 @@ const TableCard = ({ data, id }:any) => {
                 </td>
                 {/* Ações do usuário */}
                 <td className="px-6 py-4">
-                    <button 
-                        onClick={() => setVisible(!visible)} 
-                        title="Visualizar" 
+                    <button
+                        onClick={() => setVisible(!visible)}
+                        title="Visualizar"
                         className="p-4 bg-teal-500 text-white rounded-sm mx-2"
                     >
-                        <LuView className="text-xl" /> 
+                        <LuView className="text-xl" />
                     </button>
-                    <button 
-                        onClick={() => setVisible(!visible)}  
-                        title="Editar" 
+                    <button
+                        onClick={() => setVisible(!visible)}
+                        title="Editar"
                         className="p-4 bg-orange-400 text-white rounded-sm mx-2"
                     >
-                        <FaRegEdit className="text-xl" /> 
+                        <FaRegEdit className="text-xl" />
                     </button>
-                    <Button 
-                        loading={DeleteConsumerResponse.isLoading} 
-                        onClick={() => deleteHandler(data._id)} 
-                        title="Excluir" 
+                    <Button
+                        loading={DeleteConsumerResponse.isLoading}
+                        onClick={() => deleteHandler(data._id)}
+                        title="Excluir consumidor"
                         className="p-4 bg-red-500 text-white rounded-sm mx-2"
                     >
-                        <FaRegTrashAlt className="text-xl" /> 
+                        <FaRegTrashAlt className="text-xl" />
                     </Button>
                 </td>
             </tr>
-            
+
             {/* Modal para editar usuário */}
             <UpdateModel visible={visible} setVisible={setVisible} _id={data._id} />
-            
+
             <ConfirmDialog acceptClassName='' className=' ' contentClassName='py-2 ' closable />
         </>
     )

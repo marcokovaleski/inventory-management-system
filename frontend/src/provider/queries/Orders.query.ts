@@ -8,13 +8,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Criação da API de pedidos
 export const OrdersApi = createApi({
   reducerPath: "OrdersApi", // Nome do reducer no store
-  baseQuery: fetchBaseQuery({ 
+  baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND_URL // URL base do backend
   }),
-  
+
   // Tags para cache invalidation
   tagTypes: ["getAllOrders"],
-  
+
   endpoints: (builder) => ({
     // Mutation para criar novo pedido
     CreateOrder: builder.mutation<any, any>({
@@ -52,7 +52,7 @@ export const OrdersApi = createApi({
       }),
       invalidatesTags: ["getAllOrders"],
     }),
-    
+
     // Query para buscar fatura/pedido específico por ID
     getInvoiceById: builder.query<any, any>({
       query: (obj) => ({

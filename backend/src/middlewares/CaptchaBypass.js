@@ -1,31 +1,44 @@
+/**
+ * Middleware de Bypass do Captcha
+ * Gerencia a verificação do reCAPTCHA em diferentes ambientes
+ */
+
+// Verifica se está em ambiente de desenvolvimento
 const isDev = process.env.NODE_ENV !== "production";
 
+/**
+ * Middleware para verificação do captcha
+ * @param {Object} req - Objeto de requisição
+ * @param {Object} res - Objeto de resposta
+ * @param {Function} next - Função next do Express
+ */
 const CaptchaBypass = (req, res, next) => {
-  // Captura o token do reCAPTCHA enviado no corpo
+  // Captura o token do reCAPTCHA enviado no corpo da requisição
   const token = req.body.token;
 
   if (isDev) {
-    // Em desenvolvimento, ignora a verificação real
+    // Em desenvolvimento, ignora a verificação real do captcha
     if (!token) {
-      return res
-        .status(400)
-        .json({
-          message: "Token do captcha é obrigatório (mesmo em desenvolvimento)",
-        });
+      return res.status(400).json({
+        message: "Token do captcha é obrigatório (mesmo em desenvolvimento)",
+      });
     }
 
-    // Log opcional só pra controle
+    // Log opcional para controle em desenvolvimento
     console.log("Captcha verificado via bypass (ambiente de desenvolvimento)");
     return next();
   }
 
-  // Em produção, aqui deveria ir a verificação real com o Google reCAPTCHA
-  // Por enquanto, apenas impede se não houver token
+  // Em produção, verifica se o token foi fornecido
+  // TODO: Implementar verificação real com o Google reCAPTCHA
   if (!token) {
-    return res.status(400).json({ message: "Token do captcha é obrigatório" });
+    return res.status(400).json({ 
+      message: "Token do captcha é obrigatório" 
+    });
   }
 
-  return next(); // Provisoriamente permite continuar
+  // Provisoriamente permite continuar em produção
+  return next();
 };
 
 module.exports = CaptchaBypass;

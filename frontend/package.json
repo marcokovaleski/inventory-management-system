@@ -1,14 +1,28 @@
 {
-  "name": "frontend",
+  "name": "inventory-management-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Frontend do sistema de gerenciamento de inventário com React, TypeScript e Redux",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
   },
+  "keywords": [
+    "inventory",
+    "management",
+    "react",
+    "typescript",
+    "redux",
+    "tailwind",
+    "primereact"
+  ],
+  "author": "Sistema de Gerenciamento de Inventário",
+  "license": "MIT",
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
     "axios": "^1.6.8",
@@ -44,5 +58,8 @@
     "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

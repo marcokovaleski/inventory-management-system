@@ -4,6 +4,7 @@
  */
 
 const httpStatus = require("http-status");
+const bcrypt = require("bcryptjs");
 const { UserModel, ProfileModel } = require("../models");
 const ApiError = require("../utils/ApiError");
 const { generatoken } = require("../utils/Token.utils");
@@ -22,19 +23,24 @@ async function verifyCaptcha(token) {
     return true;
   }
 
-  const response = await axios.post(
-    `https://www.google.com/recaptcha/api/siteverify`,
-    {},
-    {
-      params: {
-        secret: process.env.CAPTCHA_SCREATE_KEY,
-        response: token,
-      },
-    }
-  );
+  try {
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      {},
+      {
+        params: {
+          secret: process.env.CAPTCHA_SCREATE_KEY,
+          response: token,
+        },
+      }
+    );
 
-  const data = response.data;
-  return data.success;
+    const data = response.data;
+    return data.success;
+  } catch (error) {
+    console.error("Erro ao verificar captcha:", error.message);
+    return false;
+  }
 }
 
 class AuthService {
@@ -58,8 +64,16 @@ class AuthService {
       throw new ApiError(httpStatus.BAD_REQUEST, "Usuário já registrado");
     }
 
+    // Criptografa a senha antes de salvar
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     // Cria o usuário e gera tokens
-    const user = await UserModel.create({ email, password, name });
+    const user = await UserModel.create({ 
+      email, 
+      password: hashedPassword, 
+      name 
+    });
+    
     const tokend = generatoken(user);
     const refresh_token = generatoken(user, "2d");
 
@@ -95,8 +109,9 @@ class AuthService {
       throw new ApiError(httpStatus.BAD_REQUEST, "Usuário não registrado");
     }
 
-    // Verifica se a senha está correta
-    if (password !== checkExist.password) {
+    // Verifica se a senha está correta usando bcrypt
+    const isPasswordValid = await bcrypt.compare(password, checkExist.password);
+    if (!isPasswordValid) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Credenciais inválidas");
     }
 
